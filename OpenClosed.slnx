@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Freight.Api/Freight.Api.csproj" />
+  </Folder>
+</Solution>
