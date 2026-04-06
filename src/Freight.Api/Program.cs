@@ -1,8 +1,25 @@
+using Freight.Domain.Interfaces;
+using Freight.Infrastructure.Calculators;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// ViaCEP — cliente HTTP tipado
+// builder.Services.AddHttpClient<ViaCepService>(client =>
+// {
+//     client.BaseAddress = new Uri("https://viacep.com.br");
+//     client.Timeout = TimeSpan.FromSeconds(5);
+// });
+
+// Transportadoras — cada nova = apenas uma linha aqui
+// O FreightService recebe IEnumerable<IFreightCalculator> automaticamente
+builder.Services.AddScoped<IFreightCalculator, CorreiosCalculator>();
+builder.Services.AddScoped<IFreightCalculator, JadLogCalculator>();
+builder.Services.AddScoped<IFreightCalculator, LoggiCalculator>(); // ← nova transportadora
+
 
 var app = builder.Build();
 
@@ -14,28 +31,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/test", () =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return Results.Ok("Hello, World!"); // Apenas um teste, sem lógica real
 })
-.WithName("GetWeatherForecast");
+.WithName("GetTest");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
