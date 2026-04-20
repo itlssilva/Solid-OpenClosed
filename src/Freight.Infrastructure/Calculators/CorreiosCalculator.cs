@@ -15,8 +15,7 @@ public sealed class CorreiosCalculator(ILogger<CorreiosCalculator> logger)
             "[Correios] Calculando frete {Origin} → {Dest}",
             request.OriginZipCode, request.DestinationZipCode);
 
-        // Aqui entraria a chamada real ao Webservice dos Correios (SIGEP / REST)
-        // Simulação baseada em peso para fins de aprendizado
+        // TODO : chamada real ao Webservice dos Correios (SIGEP / REST)
         await Task.Delay(80, ct);
 
         var price = Math.Round(15m + request.WeightKg * 4.5m, 2);
